@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -59,7 +60,7 @@ namespace Questionaire
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-
+            InitializeApplication(app).GetAwaiter().GetResult();
             if (env.IsDevelopment())
             {
                 app.UseBrowserLink();
@@ -83,6 +84,39 @@ namespace Questionaire
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+        private async Task InitializeApplication(IApplicationBuilder app)
+        {
+            var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
+            var rolesManager = app.ApplicationServices.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = serviceScope.ServiceProvider.GetService<UserManager<ApplicationUser>>();
+            var dbContext = app.ApplicationServices.GetService<ApplicationDbContext>();
+            // Check if Administrator Role Exists
+            var isAdminExists =
+                await rolesManager.RoleExistsAsync("Administrator");
+            if (!isAdminExists)
+            {
+                var role = new IdentityRole("Administrator");
+                await rolesManager.CreateAsync(role);
+                // Create Administrator
+                var user = new ApplicationUser
+                {
+                    FirstName = "Admin",
+                    LastName = "Administrator",
+                    Gender = Gender.Male,
+                    CouncilNumber = "911209",
+                    PhoneNumber = "0797629979",
+                    Email = "khabubundivhu@gmail.com",
+                    EmailConfirmed = true,
+                    UserName = "khabubundivhu@gmail.com",
+                };
+                var result = await userManager.CreateAsync(user, "Khabu@503");
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(user, role.Name);
+                    await dbContext.SaveChangesAsync();
+                }
+            }
         }
     }
 }

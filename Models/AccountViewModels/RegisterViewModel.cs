@@ -9,6 +9,22 @@ namespace Questionaire.Models.AccountViewModels
     public class RegisterViewModel
     {
         [Required]
+        [Display(Name = "First Name")]
+        public string FirstName { get; set; }
+
+        [Required]
+        [Display(Name = "Last Name")]
+        public string LastName { get; set; }
+
+        [Required]
+        [Display(Name = "Gender")]
+        public Gender Gender { get; set; }
+
+        [Required]
+        [Display(Name = "Council Number")]
+        public string CouncilNumber { get; set; }
+
+        [Required]
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }

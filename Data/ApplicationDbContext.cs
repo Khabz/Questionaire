@@ -22,5 +22,8 @@ namespace Questionaire.Data
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
         }
-    }
+        public DbSet<Question> Questions { get; set; }
+        public DbSet<Quiz> Quizzes { get; set; }
+        public DbSet<Respose> Resposes { get; set; }
+    } 
 }

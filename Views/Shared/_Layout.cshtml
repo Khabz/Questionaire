@@ -1,4 +1,8 @@
-@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
+﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
+@inject UserManager<ApplicationUser> userManager
+@{ 
+    var user = await userManager.GetUserAsync(User);
+}
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,66 +11,243 @@
     <title>@ViewData["Title"] - Questionaire</title>
 
     <environment names="Development">
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/css/site.css" />
+        <link href="~/assets/plugins/pace/pace-theme-flash.css" rel="stylesheet" type="text/css" />
+        <link href="~/assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="~/assets/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" type="text/css" />
+        <link href="~/assets/plugins/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css" media="screen" />
+        <link href="~/assets/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" media="screen" />
+        <link href="~/assets/plugins/switchery/css/switchery.min.css" rel="stylesheet" type="text/css" media="screen" />
+        <link href="~/pages/css/pages-icons.css" rel="stylesheet" type="text/css">
+        <link class="main-stylesheet" href="~/pages/css/themes/light.css" rel="stylesheet" type="text/css" />
     </environment>
     <environment names="Staging,Production">
-        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
-              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+        <link href="~/assets/plugins/pace/pace-theme-flash.css" rel="stylesheet" type="text/css" />
+        <link href="~/assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="~/assets/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" type="text/css" />
+        <link href="~/assets/plugins/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css" media="screen" />
+        <link href="~/assets/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" media="screen" />
+        <link href="~/assets/plugins/switchery/css/switchery.min.css" rel="stylesheet" type="text/css" media="screen" />
+        <link href="~/pages/css/pages-icons.css" rel="stylesheet" type="text/css">
+        <link class="main-stylesheet" href="~/pages/css/themes/light.css" rel="stylesheet" type="text/css" />
     </environment>
     @Html.Raw(JavaScriptSnippet.FullScript)
 </head>
-<body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Questionaire</a>
+<body class="fixed-header menu-pin">
+    @if (!User.Identity.IsAuthenticated)
+    {
+        <nav class="page-sidebar" data-pages="sidebar">
+            <div class="sidebar-header">
+                <img src="~/assets/img/logo.png" alt="logo" class="brand" width="78" height="22">
             </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+
+            <div class="sidebar-menu">
+
+                <ul class="menu-items">
+                    <li class="m-t-30 ">
+                        <a asp-action="Index" asp-controller="Home" class="detailed">
+                            <span class="title">Home</span>
+                            <span class="details">Dashboard</span>
+                        </a>
+                        <span class="icon-thumbnail"><i data-feather="home"></i></span>
+                    </li>
+                    <li class="">
+                        <a asp-action="Login" asp-controller="Account" class="detailed">
+                            <span class="title">Login</span>
+                            <span class="details">Login to your account</span>
+                        </a>
+                        <span class="icon-thumbnail"><i data-feather="user"></i></span>
+                    </li>
+                    <li class="">
+                        <a asp-action="Register" asp-controller="Account" class="detailed">
+                            <span class="title">Register</span>
+                            <span class="details">Don't have an account?</span>
+                        </a>
+                        <span class="icon-thumbnail"><i data-feather="user"></i></span>
+                    </li>
+                    <li class="">
+                        <a asp-action="Login" asp-controller="Account" class="detailed">
+                            <span class="title">Questionaire</span>
+                            <span class="details">Take questionaire</span>
+                        </a>
+                        <span class="icon-thumbnail"><i data-feather="book"></i></span>
+                    </li>
                 </ul>
-                @await Html.PartialAsync("_LoginPartial")
+                <div class="clearfix"></div>
+            </div>
+
+        </nav>
+
+        <div class="page-container">
+            <div class="header">
+                <a href="#" class="btn-link toggle-sidebar d-lg-none pg pg-menu" data-toggle="sidebar">
+                </a>
+                <div class="">
+                    <div class="brand inline">
+                        <img src="~/assets/img/logo.png" alt="logo" width="78" height="22">
+                    </div>
+                    <a href="#" class="search-link d-none d-lg-inline-block d-xl-inline-block" data-toggle="search"><i class="pg-search"></i>Type anywhere to <span class="bold">search</span></a>
+                </div>
+                <div class="d-flex align-items-center">
+                    <div class="dropdown pull-right d-lg-inline-block d-none">
+                        <button class="profile-dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="thumbnail-wrapper d32 circular inline">
+                                <img src="~/assets/img/default.jpg" alt="" width="32" height="32">
+                            </span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right profile-dropdown" role="menu">
+                            <a asp-action="Login" asp-controller="Account" class="dropdown-item"><i class="fa fa-sign-in"></i> Login</a>
+                            <a asp-action="Register" asp-controller="Account" class="dropdown-item"><i class="fa fa-sign-in"></i> Register</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="page-content-wrapper">
+                <div class="content">
+                    @RenderBody()
+                </div>
             </div>
         </div>
-    </nav>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; 2019 - Questionaire</p>
-        </footer>
-    </div>
 
+
+    }
+    else
+    {
+        <nav class="page-sidebar" data-pages="sidebar">
+            <div class="sidebar-header">
+                <img src="~/assets/img/logo.png" alt="logo" class="brand" width="78" height="22">
+            </div>
+
+            <div class="sidebar-menu">
+
+                <ul class="menu-items">
+                    <li class="m-t-30 ">
+                        <a asp-action="Index" asp-controller="Home" class="detailed">
+                            <span class="title">Home</span>
+                            <span class="details">Dashboard</span>
+                        </a>
+                        <span class="icon-thumbnail"><i data-feather="home"></i></span>
+                    </li>
+                    <li class="">
+                        <a asp-action="Login" asp-controller="Account" class="detailed">
+                            <span class="title">Account</span>
+                            <span class="details">Manage your account</span>
+                        </a>
+                        <span class="icon-thumbnail"><i data-feather="user"></i></span>
+                    </li>
+                    <li class="">
+                        <a asp-action="Login" asp-controller="Account" class="detailed">
+                            <span class="title">Questionaire</span>
+                            <span class="details">Take questionaire</span>
+                        </a>
+                        <span class="icon-thumbnail"><i data-feather="book"></i></span>
+                    </li>
+                    <li class="">
+                        <a asp-action="Logout" asp-controller="Account" class="detailed">
+                            <span class="title">Logout</span>
+                            <span class="details">Take questionaire</span>
+                        </a>
+                        <span class="icon-thumbnail"><i class="pg-power"></i></span>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+
+        </nav>
+
+        <div class="page-container">
+            <div class="header">
+                <a href="#" class="btn-link toggle-sidebar d-lg-none pg pg-menu" data-toggle="sidebar">
+                </a>
+                <div class="">
+                    <div class="brand inline">
+                        <img src="~/assets/img/logo.png" alt="logo" width="78" height="22">
+                    </div>
+                    <a href="#" class="search-link d-none d-lg-inline-block d-xl-inline-block" data-toggle="search"><i class="pg-search"></i>Type anywhere to <span class="bold">search</span></a>
+                </div>
+                <div class="d-flex align-items-center">
+                    <div class="pull-left p-r-10 fs-14 font-heading d-lg-inline-block d-none m-l-20">
+                        <span class="semi-bold">@user.FirstName</span> <span class="text-master">@user.LastName</span>
+                    </div>
+                    <div class="dropdown pull-right d-lg-inline-block d-none">
+                        <button class="profile-dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="thumbnail-wrapper d32 circular inline">
+                                <img src="~/assets/img/default.jpg" alt="" width="32" height="32">
+                            </span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right profile-dropdown" role="menu">
+                            <a href="#" class="dropdown-item"><i class="fa fa-user-circle"></i> Feedback</a>
+                            <a href="#" class="dropdown-item"><i class="pg-settings"></i> Settings</a>
+                            <a href="#" class="dropdown-item"><i class="pg-signals"></i> Help</a>
+                            <a asp-action="Logout" asp-controller="Account" class="clearfix bg-master-lighter dropdown-item">
+                                <span class="pull-left">Logout</span>
+                                <span class="pull-right"><i class="pg-power"></i></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="page-content-wrapper">
+                <div class="content">
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+    }
     <environment names="Development">
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/assets/plugins/feather-icons/feather.min.js" type="text/javascript"></script>
+        <script src="~/assets/plugins/pace/pace.min.js" type="text/javascript"></script>
+        <script src="~/assets/plugins/jquery/jquery-3.2.1.min.js" type="text/javascript"></script>
+        <script src="~/assets/plugins/modernizr.custom.js" type="text/javascript"></script>
+        <script src="~/assets/plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+        <script src="~/assets/plugins/popper/umd/popper.min.js" type="text/javascript"></script>
+        <script src="~/assets/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="~/assets/plugins/jquery/jquery-easy.js" type="text/javascript"></script>
+        <script src="~/assets/plugins/jquery-unveil/jquery.unveil.min.js" type="text/javascript"></script>
+        <script src="~/assets/plugins/jquery-ios-list/jquery.ioslist.min.js" type="text/javascript"></script>
+        <script src="~/assets/plugins/jquery-actual/jquery.actual.min.js"></script>
+        <script src="~/assets/plugins/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+        <script type="text/javascript" src="~/assets/plugins/select2/js/select2.full.min.js"></script>
+        <script type="text/javascript" src="~/assets/plugins/classie/classie.js"></script>
+        <script src="~/assets/plugins/switchery/js/switchery.min.js" type="text/javascript"></script>
+
+
+
+        <script src="~/pages/js/pages.js"></script>
+
+
+        <script src="~/assets/js/scripts.js" type="text/javascript"></script>
+
+
+
+        <script src="~/assets/js/scripts.js" type="text/javascript"></script>
     </environment>
     <environment names="Staging,Production">
-        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
-                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-                asp-fallback-test="window.jQuery"
-                crossorigin="anonymous"
-                integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk">
-        </script>
-        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
-                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-                crossorigin="anonymous"
-                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
-        </script>
-        <script src="~/js/site.min.js" asp-append-version="true"></script>
+        <script src="~/assets/plugins/feather-icons/feather.min.js" type="text/javascript"></script>
+        <script src="~/assets/plugins/pace/pace.min.js" type="text/javascript"></script>
+        <script src="~/assets/plugins/jquery/jquery-3.2.1.min.js" type="text/javascript"></script>
+        <script src="~/assets/plugins/modernizr.custom.js" type="text/javascript"></script>
+        <script src="~/assets/plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+        <script src="~/assets/plugins/popper/umd/popper.min.js" type="text/javascript"></script>
+        <script src="~/assets/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="~/assets/plugins/jquery/jquery-easy.js" type="text/javascript"></script>
+        <script src="~/assets/plugins/jquery-unveil/jquery.unveil.min.js" type="text/javascript"></script>
+        <script src="~/assets/plugins/jquery-ios-list/jquery.ioslist.min.js" type="text/javascript"></script>
+        <script src="~/assets/plugins/jquery-actual/jquery.actual.min.js"></script>
+        <script src="~/assets/plugins/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+        <script type="text/javascript" src="~/assets/plugins/select2/js/select2.full.min.js"></script>
+        <script type="text/javascript" src="~/assets/plugins/classie/classie.js"></script>
+        <script src="~/assets/plugins/switchery/js/switchery.min.js" type="text/javascript"></script>
+
+
+
+        <script src="~/pages/js/pages.js"></script>
+
+
+        <script src="~/assets/js/scripts.js" type="text/javascript"></script>
+
+
+
+        <script src="~/assets/js/scripts.js" type="text/javascript"></script>
     </environment>
 
     @RenderSection("Scripts", required: false)
