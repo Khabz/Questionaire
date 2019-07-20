@@ -134,13 +134,34 @@
                         </a>
                         <span class="icon-thumbnail"><i data-feather="user"></i></span>
                     </li>
-                    <li class="">
-                        <a asp-action="Login" asp-controller="Account" class="detailed">
-                            <span class="title">Questionaire</span>
-                            <span class="details">Take questionaire</span>
-                        </a>
-                        <span class="icon-thumbnail"><i data-feather="book"></i></span>
-                    </li>
+
+                    @if (await userManager.IsInRoleAsync(user, "Administrator"))
+                    {
+                        <li>
+                            <a href="javascript:;" class="detailed">
+                                <span class="title">Manage</span>
+                                <span class="arrow"></span>
+                                <span class="details">System settings</span>
+                            </a>
+                            <span class="icon-thumbnail"><i data-feather="settings"></i></span>
+                            <ul class="sub-menu">
+                                <li class="">
+                                    <a asp-action="Questions" asp-controller="Administrator">Questions</a>
+                                    <span class="icon-thumbnail">q</span>
+                                </li>
+                            </ul>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="">
+                            <a asp-action="Login" asp-controller="Account" class="detailed">
+                                <span class="title">Questionaire</span>
+                                <span class="details">Take questionaire</span>
+                            </a>
+                            <span class="icon-thumbnail"><i data-feather="book"></i></span>
+                        </li>
+                    }
                     <li class="">
                         <a asp-action="Logout" asp-controller="Account" class="detailed">
                             <span class="title">Logout</span>

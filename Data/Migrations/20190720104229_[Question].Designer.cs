@@ -9,9 +9,10 @@ using Questionaire.Models;
 namespace Questionaire.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190720104229_[Question]")]
+    partial class Question
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.6")
@@ -187,13 +188,9 @@ namespace Questionaire.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<bool>("False");
-
                     b.Property<string>("QuestionName");
 
                     b.Property<int?>("QuizId");
-
-                    b.Property<bool>("True");
 
                     b.HasKey("Id");
 

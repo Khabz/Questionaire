@@ -1,15 +1,112 @@
 ﻿@inject UserManager<ApplicationUser> userManager
+@inject ApplicationDbContext DbContext
 @{
     ViewData["Title"] = "Welcome";
 
     var user = await userManager.GetUserAsync(User);
+
+    var users = DbContext.Users.ToList();
+
+    var completedQ = DbContext.Quizzes.Where(c => c.Status == Status.Complete).ToList();
+    var IncompletedQ = DbContext.Quizzes.Where(c => c.Status == Status.Incomplete).ToList();
+    var issuedCertificate = DbContext.Quizzes.Where(c => c.Results == Results.Successful).ToList();
 }
 
 @if (User.Identity.IsAuthenticated)
 {
     if (await userManager.IsInRoleAsync(user, "Administrator"))
     {
+        <div class="jumbotron" data-pages="parallax">
+            <div class=" container-fluid   container-fixed-lg sm-p-l-0 sm-p-r-0">
+                <div class="inner">
 
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home</a></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class=" container-fluid   container-fixed-lg">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card card-transparent">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div data-pages="card" class="card card-default" id="card-basic">
+                                        <div class="card-header  ">
+                                            <div class="card-title">
+                                                Total Users
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <h3>
+                                                <span class="semi-bold">@users.Count</span>
+                                            </h3>
+                                            <p>
+                                                <a asp-action="" asp-controller="">View</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div data-pages="card" class="card card-default" id="card-basic">
+                                        <div class="card-header  ">
+                                            <div class="card-title">
+                                                Completed Questionaires
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <h3>
+                                                <span class="semi-bold">@completedQ.Count</span>
+                                            </h3>
+                                            <p>
+                                                <a asp-action="" asp-controller="">View</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div data-pages="card" class="card card-default" id="card-basic">
+                                        <div class="card-header  ">
+                                            <div class="card-title">
+                                                Incomplete Questionaires
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <h3>
+                                                <span class="semi-bold">@IncompletedQ.Count</span>
+                                            </h3>
+                                            <p>
+                                                <a asp-action="" asp-controller="">View</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div data-pages="card" class="card card-default" id="card-basic">
+                                        <div class="card-header  ">
+                                            <div class="card-title">
+                                                Certificates Issued
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <h3>
+                                                <span class="semi-bold">@issuedCertificate.Count</span>
+                                            </h3>
+                                            <p>
+                                                <a asp-action="" asp-controller="">View</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     }
     else
     {
@@ -25,31 +122,7 @@
         </div>
 
 
-        <div class=" container-fluid   container-fixed-lg">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h4 class="list-group-item-heading">Common Audiological conditions in Adults</h4>
-                    <ol class="order-1">
-                        <li class="text-black">
-                            Presbycusis
-                        </li>
-                        <li class="text-black">
-                            Occupational/noise induced hearing loss
-                        </li>
-                        <li class="text-black">
-                            Ototoxic hearing loss
-                        </li>
-                        <li class="text-black-50">
-                            Trauma
-                        </li>
-                        <li class="text-black">
-                            HIV related hearing loss
-                        </li>
-                    </ol>
 
-                </div>
-            </div>
-        </div>
     }
 }
 else
